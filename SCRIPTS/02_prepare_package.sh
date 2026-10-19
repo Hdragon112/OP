@@ -60,7 +60,7 @@ sed -i 's#20) \* 1000#60) \* 1000#g' feeds/luci/modules/luci-base/htdocs/luci-st
 # Patch arm64 型号名称
 cp -rf ../PATCH/kernel/arm/* ./target/linux/generic/hack-${KERNEL_VERSION}/
 # BBRv3
-# cp -rf ../PATCH/kernel/bbr3/* ./target/linux/generic/backport-${KERNEL_VERSION}/
+cp -rf ../PATCH/kernel/bbr3/* ./target/linux/generic/backport-${KERNEL_VERSION}/
 # LRNG
 cp -rf ../PATCH/kernel/lrng/* ./target/linux/generic/hack-${KERNEL_VERSION}/
 echo '
@@ -96,29 +96,9 @@ curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.
 #cp -rf ../PATCH/kernel/bcmfullcone/* ./target/linux/generic/hack-${KERNEL_VERSION}/
 # set nf_conntrack_expect_max for fullcone
 #wget -qO - https://github.com/openwrt/openwrt/commit/bbf39d07.patch | patch -p1
-#echo "net.netfilter.nf_conntrack_helper = 1" >>./package/kernel/linux/files/sysctl-nf-conntrack.conf
 # FW4
 #mkdir -p package/network/config/firewall4/patches
 #cp -f ../PATCH/pkgs/firewall/firewall4_patches/*.patch ./package/network/config/firewall4/patches/
-#mkdir -p package/libs/libnftnl/patches
-#cp -f ../PATCH/pkgs/firewall/libnftnl/*.patch ./package/libs/libnftnl/patches/
-#sed -i '/PKG_INSTALL:=/iPKG_FIXUP:=autoreconf' package/libs/libnftnl/Makefile
-#mkdir -p package/network/utils/nftables/patches
-#cp -f ../PATCH/pkgs/firewall/nftables/*.patch ./package/network/utils/nftables/patches/
-# Patch LuCI 以增添 FullCone 开关
-#pushd feeds/luci
-#patch -p1 <../../../PATCH/pkgs/firewall/luci/0001-luci-app-firewall-add-nft-fullcone-and-bcm-fullcone-.patch
-#popd
-
-### Shortcut-FE 部分 ###
-# Patch Kernel 以支持 Shortcut-FE
-#cp -rf ../PATCH/kernel/sfe/* ./target/linux/generic/hack-${KERNEL_VERSION}/
-#cp -rf ../lede/target/linux/generic/pending-${KERNEL_VERSION}/613-netfilter_optional_tcp_window_check.patch ./target/linux/generic/pending-${KERNEL_VERSION}/613-netfilter_optional_tcp_window_check.patch
-# Patch LuCI 以增添 Shortcut-FE 开关
-#pushd feeds/luci
-#patch -p1 <../../../PATCH/pkgs/firewall/luci/0002-luci-app-firewall-add-shortcut-fe-option.patch
-#popd
-
 ### NAT6 部分 ###
 # custom nft command
 #patch -p1 < ../PATCH/pkgs/firewall/100-openwrt-firewall4-add-custom-nft-command-support.patch
@@ -132,12 +112,7 @@ curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.
 #patch -p1 <../../../PATCH/pkgs/firewall/luci/0004-luci-add-firewall-add-custom-nft-rule-support.patch
 #popd
 
-### natflow 部分 ###
-#pushd feeds/luci
-#patch -p1 <../../../PATCH/pkgs/firewall/luci/0005-luci-app-firewall-add-natflow-offload-support.patch
-#popd
-
-### fullcone6 ###
+### Broadcom FullCone NAT (must come after 0003/0004: generated against them) ###
 #pushd feeds/luci
 #patch -p1 <../../../PATCH/pkgs/firewall/luci/0007-luci-app-firewall-add-fullcone6-option-for-nftables-.patch
 #popd
@@ -159,6 +134,12 @@ sed -i 's,@CMDLINE@ noinitrd,noinitrd mitigations=off,g' target/linux/x86/image/
 
 ### ADD PKG 部分 ###
 cp -rf ../OpenWrt-Add ./package/new
+rm -rf ./package/new/shortcut-fe
+# nft-fullcone is superseded by the Broadcom scheme; drop its kmod from the build
+# and from addition-trans-zh's DEPENDS, which would otherwise reference a package
+# that no longer exists (07_fw3.sh does the iptables-side equivalent).
+rm -rf ./package/new/lede_pkg/fullconenat-nft
+sed -i 's/ +kmod-nft-fullcone//' ./package/new/addition-trans-zh/Makefile
 rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,frp,microsocks,shadowsocks-libev,zerotier,daed}
 rm -rf feeds/luci/applications/{luci-app-frps,luci-app-frpc,luci-app-zerotier}
 rm -rf feeds/packages/utils/coremark
@@ -178,6 +159,9 @@ cp -rf ../OpenWrt-Add/feeds_packages_lang_node-prebuilt ./feeds/packages/lang/no
 rm -rf ./feeds/packages/lang/golang
 cp -rf ../openwrt_pkg_ma/lang/golang ./feeds/packages/lang/golang
 #git clone https://github.com/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
+# gn
+rm -rf ./feeds/packages/devel/gn
+cp -rf ../imm_pkg/devel/gn ./feeds/packages/devel/gn
 # apk
 pushd feeds/luci
 wget -qO- https://github.com/sbwml/r4s_build_script/raw/refs/heads/master/openwrt/patch/luci/applications/luci-app-package-manager/0001-luci-app-package-manager-support-installing-uploaded.patch | patch -p1
@@ -245,7 +229,7 @@ echo > ./feeds/packages/utils/watchcat/files/watchcat.config
 # 默认开启 Irqbalance
 #sed -i "s/enabled '0'/enabled '1'/g" feeds/packages/utils/irqbalance/files/irqbalance.config
 # Build date, add date prefix
-sed -i '/#Dropbear/i\sed -i '\''/BUILD_ID/d'\'' /etc/os-release\necho "BUILD_ID='\''R261001" >> /etc/os-release' package/new/addition-trans-zh/files/zzz-default-settings
+sed -i '/#Dropbear/i\sed -i '\''/BUILD_ID/d'\'' /etc/os-release\necho "BUILD_ID='\''R261020" >> /etc/os-release' package/new/addition-trans-zh/files/zzz-default-settings
 sed -i "s|\$(VERSION_DIST_SANITIZED)-|\$(VERSION_DIST_SANITIZED)-$(TZ=Asia/Shanghai date +%Y%m%d)-|" include/image.mk
 
 # 使用 TEO CPU 空闲调度器
