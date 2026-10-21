@@ -319,7 +319,7 @@ jobs:
         id: set_release_vars
         run: |
           echo "TAG=${{ env.latest_release }}-$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
-          echo "NAME=OpenWRT-${{ env.latest_release }}-$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+          echo "NAME=noodlesOS-${{ env.latest_release }}-$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Create release
