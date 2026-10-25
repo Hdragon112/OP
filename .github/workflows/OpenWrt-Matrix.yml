@@ -105,7 +105,7 @@ jobs:
           seed="${{ matrix.name }}"
 
           # artifact_prefix rule
-          artifact_prefix="${{ matrix.name }}-HYH112"
+          artifact_prefix="${{ matrix.name }}-noodles"
 
           # sha_match rule
           sha_match="$name_lower"
