@@ -1,0 +1,72 @@
+## noodlesOS ##
+CONFIG_TARGET_x86=y
+CONFIG_TARGET_x86_64=y
+CONFIG_TARGET_x86_64_DEVICE_generic=y
+# CONFIG_FEED_noodles8 is not set
+CONFIG_GRUB_TITLE="noodlesOS"
+CONFIG_IMAGEOPT=y
+CONFIG_TARGET_KERNEL_PARTSIZE=300
+CONFIG_TARGET_ROOTFS_PARTSIZE=3112
+CONFIG_GRUB_TIMEOUT="3"
+CONFIG_KERNEL_BUILD_DOMAIN="Debian13"
+CONFIG_KERNEL_BUILD_USER="noodles"
+
+CONFIG_VERSIONOPT=y
+CONFIG_VERSION_BUG_URL=""
+CONFIG_VERSION_CODE="R261024"
+CONFIG_VERSION_CODE_FILENAMES=y
+CONFIG_VERSION_DIST="noodlesOS"
+CONFIG_VERSION_FILENAMES=y
+CONFIG_VERSION_FIRMWARE_URL=""
+CONFIG_VERSION_HOME_URL=""
+CONFIG_VERSION_HWREV=""
+CONFIG_VERSION_MANUFACTURER="noodles"
+CONFIG_VERSION_MANUFACTURER_URL=""
+CONFIG_VERSION_NUMBER="25.12.6"
+CONFIG_VERSION_PRODUCT=""
+CONFIG_VERSION_REPO="https://downloads.openwrt.org/releases/25.12.6"
+CONFIG_VERSION_SUPPORT_URL=""
+
+CONFIG_PACKAGE_A-default-settings=y
+CONFIG_PACKAGE_addition-trans-zh=y
+CONFIG_PACKAGE_autocore-x86=y
+CONFIG_PACKAGE_qemu-ga=y
+CONFIG_PACKAGE_luci-mod-dashboard=y
+
+### APPLICATION ###
+CONFIG_PACKAGE_luci-app-homeproxy=y
+CONFIG_PACKAGE_luci-app-aurora-config=y
+CONFIG_PACKAGE_luci-app-arpbind=y
+CONFIG_PACKAGE_luci-app-taskplan=y
+## CONFIG_PACKAGE_luci-app-mosdns=y
+CONFIG_PACKAGE_luci-app-openclash=y
+##CONFIG_PACKAGE_luci-app-opkg=y
+CONFIG_PACKAGE_luci-app-ramfree=y
+CONFIG_PACKAGE_luci-app-upnp=y
+CONFIG_PACKAGE_luci-app-services-wolplus=y
+CONFIG_PACKAGE_luci-app-oaf=y
+CONFIG_PACKAGE_luci-app-bandix=y
+
+## CONFIG_PACKAGE_luci-app-argon-config=y
+CONFIG_PACKAGE_luci-app-autoreboot=y
+CONFIG_PACKAGE_luci-app-control-timewol=y
+CONFIG_PACKAGE_luci-app-ddnsto=y
+CONFIG_PACKAGE_luci-app-linkease=y
+CONFIG_PACKAGE_luci-app-poweroff=y
+CONFIG_PACKAGE_luci-app-ttyd=y
+CONFIG_PACKAGE_luci-app-udpxy=y
+CONFIG_PACKAGE_luci-app-turboacc=y
+
+### SSRP ###
+CONFIG_PACKAGE_luci-app-ssr-plus=y
+CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_ChinaDNS_NG=y
+CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Client=y
+CONFIG_PACKAGE_luci-app-ssr-plus_INCLUDE_Shadowsocks_Rust_Server=y
+
+### PASSWALL ###
+CONFIG_PACKAGE_luci-app-passwall=y
+CONFIG_PACKAGE_luci-app-passwall_INCLUDE_Xray_Plugin=y
+
+### THEME ###
+CONFIG_PACKAGE_luci-theme-aurora=y
+CONFIG_PACKAGE_luci-theme-bootstrap=y
