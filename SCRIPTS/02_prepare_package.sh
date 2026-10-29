@@ -31,15 +31,6 @@ sed -i 's,-SNAPSHOT,,g' include/version.mk
 sed -i 's,-SNAPSHOT,,g' package/base-files/image-config.in
 sed -i '/CONFIG_BUILDBOT/d' include/feeds.mk
 sed -i 's/;)\s*\\/; \\/' include/feeds.mk
-# Nginx
-sed -i "s/large_client_header_buffers 2 1k/large_client_header_buffers 4 32k/g" feeds/packages/net/nginx-util/files/uci.conf.template
-sed -i "s/client_max_body_size 128M/client_max_body_size 2048M/g" feeds/packages/net/nginx-util/files/uci.conf.template
-sed -i '/client_max_body_size/a\\tclient_body_buffer_size 8192M;' feeds/packages/net/nginx-util/files/uci.conf.template
-sed -i '/client_max_body_size/a\\tserver_names_hash_bucket_size 128;' feeds/packages/net/nginx-util/files/uci.conf.template
-sed -i '/ubus_parallel_req/a\        ubus_script_timeout 600;' feeds/packages/net/nginx/files-luci-support/60_nginx-luci-support
-sed -ri "/luci-webui.socket/i\ \t\tuwsgi_send_timeout 600\;\n\t\tuwsgi_connect_timeout 600\;\n\t\tuwsgi_read_timeout 600\;" feeds/packages/net/nginx/files-luci-support/luci.locations
-sed -ri "/luci-cgi_io.socket/i\ \t\tuwsgi_send_timeout 600\;\n\t\tuwsgi_connect_timeout 600\;\n\t\tuwsgi_read_timeout 600\;" feeds/packages/net/nginx/files-luci-support/luci.locations
-sed -i '1i\log_not_found off;' feeds/packages/net/nginx/files-luci-support/luci.locations
 # uwsgi
 sed -i 's,procd_set_param stderr 1,procd_set_param stderr 0,g' feeds/packages/net/uwsgi/files/uwsgi.init
 sed -i 's,buffer-size = 10000,buffer-size = 131072,g' feeds/packages/net/uwsgi/files-luci-support/luci-webui.ini
@@ -52,70 +43,8 @@ sed -i 's/cheaper = 1/cheaper = 2/g' feeds/packages/net/uwsgi/files-luci-support
 sed -i 's/option timeout 30/option timeout 60/g' package/system/rpcd/files/rpcd.config
 sed -i 's#20) \* 1000#60) \* 1000#g' feeds/luci/modules/luci-base/htdocs/luci-static/resources/rpc.js
 
-### FW4 ###
-#rm -rf ./package/network/config/firewall4
-#cp -rf ../openwrt_ma/package/network/config/firewall4 ./package/network/config/firewall4
-
-### 必要的 Patches ###
-# Patch arm64 型号名称
-cp -rf ../PATCH/kernel/arm/* ./target/linux/generic/hack-${KERNEL_VERSION}/
-# BBRv3
-#cp -rf ../PATCH/kernel/bbr3/* ./target/linux/generic/backport-${KERNEL_VERSION}/
-# LRNG
-cp -rf ../PATCH/kernel/lrng/* ./target/linux/generic/hack-${KERNEL_VERSION}/
-echo '
-# CONFIG_RANDOM_DEFAULT_IMPL is not set
-CONFIG_LRNG=y
-CONFIG_LRNG_DEV_IF=y
-# CONFIG_LRNG_IRQ is not set
-CONFIG_LRNG_JENT=y
-CONFIG_LRNG_CPU=y
-# CONFIG_LRNG_SCHED is not set
-CONFIG_LRNG_SELFTEST=y
-# CONFIG_LRNG_SELFTEST_PANIC is not set
-' >>./target/linux/generic/config-${KERNEL_VERSION}
-# NETKIT
-echo '
-CONFIG_NETKIT=y
-CONFIG_IPV6_MULTIPLE_TABLES=y
-' >>./target/linux/generic/config-${KERNEL_VERSION}
-# wg
-cp -rf ../PATCH/kernel/wg/* ./target/linux/generic/hack-${KERNEL_VERSION}/
-# dont wrongly interpret first-time data
-echo "net.netfilter.nf_conntrack_tcp_max_retrans=5" >>./package/kernel/linux/files/sysctl-nf-conntrack.conf
-# OTHERS
-cp -rf ../PATCH/kernel/others/* ./target/linux/generic/pending-${KERNEL_VERSION}/
-# luci-app-attendedsysupgrade
-sed -i '/luci-app-attendedsysupgrade/d' feeds/luci/collections/luci-nginx/Makefile
-
 ### luci-app-turboacc ###
 curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
-
-### Fullcone-NAT 部分 ###
-# bcmfullcone
-#cp -rf ../PATCH/kernel/bcmfullcone/* ./target/linux/generic/hack-${KERNEL_VERSION}/
-# set nf_conntrack_expect_max for fullcone
-#wget -qO - https://github.com/openwrt/openwrt/commit/bbf39d07.patch | patch -p1
-# FW4
-#mkdir -p package/network/config/firewall4/patches
-#cp -f ../PATCH/pkgs/firewall/firewall4_patches/*.patch ./package/network/config/firewall4/patches/
-### NAT6 部分 ###
-# custom nft command
-#patch -p1 < ../PATCH/pkgs/firewall/100-openwrt-firewall4-add-custom-nft-command-support.patch
-#cp -f ../PATCH/pkgs/firewall/firewall4_patches/*.patch ./package/network/config/firewall4/patches/
-# Patch LuCI 以增添 NAT6 开关
-#pushd feeds/luci
-#patch -p1 <../../../PATCH/pkgs/firewall/luci/0003-luci-app-firewall-add-ipv6-nat-option.patch
-#popd
-# Patch LuCI 以支持自定义 nft 规则
-#pushd feeds/luci
-#patch -p1 <../../../PATCH/pkgs/firewall/luci/0004-luci-add-firewall-add-custom-nft-rule-support.patch
-#popd
-
-### Broadcom FullCone NAT (must come after 0003/0004: generated against them) ###
-#pushd feeds/luci
-#patch -p1 <../../../PATCH/pkgs/firewall/luci/0007-luci-app-firewall-add-fullcone6-option-for-nftables-.patch
-#popd
 
 ### Other Kernel Hack 部分 ###
 # make olddefconfig
@@ -154,7 +83,7 @@ wget https://github.com/coolsnowwolf/lede/raw/refs/heads/master/target/linux/roc
 # 更换 Nodejs 版本
 rm -rf ./feeds/packages/lang/node
 rm -rf ./package/new/feeds_packages_lang_node-prebuilt
-cp -rf ../OpenWrt-Add/feeds_packages_lang_node-prebuilt ./feeds/packages/lang/node
+cp -rf ../OpenWrt-Add/apps/feeds_packages_lang_node-prebuilt ./feeds/packages/lang/node
 # 更换 golang 版本
 rm -rf ./feeds/packages/lang/golang
 cp -rf ../openwrt_pkg_ma/lang/golang ./feeds/packages/lang/golang
@@ -166,9 +95,7 @@ cp -rf ../imm_pkg/devel/gn ./feeds/packages/devel/gn
 pushd feeds/luci
 wget -qO- https://github.com/sbwml/r4s_build_script/raw/refs/heads/master/openwrt/patch/luci/applications/luci-app-package-manager/0001-luci-app-package-manager-support-installing-uploaded.patch | patch -p1
 popd
-# rust
-#wget https://github.com/rust-lang/rust/commit/cdae267.patch -O feeds/packages/lang/rust/patches/cdae267.patch
-#sed -i 's/--set=llvm\.download-ci-llvm=true/--set=llvm.download-ci-llvm=false/' feeds/packages/lang/rust/Makefile
+
 # mount cgroupv2
 pushd feeds/packages
 #patch -p1 <../../../PATCH/pkgs/cgroupfs-mount/0001-fix-cgroupfs-mount.patch
@@ -206,17 +133,7 @@ patch -p1 <../../../PATCH/pkgs/miniupnpd/luci-upnp-support-force_forwarding-flag
 popd
 # 动态DNS
 sed -i '/boot()/,+2d' feeds/packages/net/ddns-scripts/files/etc/init.d/ddns
-# Docker 容器
-rm -rf ./feeds/luci/applications/luci-app-dockerman
-cp -rf ../dockerman/applications/luci-app-dockerman ./feeds/luci/applications/luci-app-dockerman
-sed -i '/auto_start/d' feeds/luci/applications/luci-app-dockerman/root/etc/uci-defaults/luci-app-dockerman
-pushd feeds/packages
-wget -qO- https://github.com/openwrt/packages/commit/e2e5ee69.patch | patch -p1
-wget -qO- https://github.com/openwrt/packages/pull/20054.patch | patch -p1
-popd
-sed -i '/sysctl.d/d' feeds/packages/utils/dockerd/Makefile
-rm -rf ./feeds/luci/collections/luci-lib-docker
-cp -rf ../docker_lib/collections/luci-lib-docker ./feeds/luci/collections/luci-lib-docker
+
 # IPv6 兼容助手
 patch -p1 <../PATCH/pkgs/odhcp6c/1002-odhcp6c-support-dhcpv6-hotplug.patch
 # ODHCPD
@@ -243,7 +160,7 @@ find ./target/linux/ -name "config-${KERNEL_VERSION}" | xargs -I{} sh -c "echo '
 ### 最后的收尾工作 ###
 # Lets Fuck
 mkdir -p package/base-files/files/usr/bin
-cp -rf ../OpenWrt-Add/fuck ./package/base-files/files/usr/bin/fuck
+cp -rf ../OpenWrt-Add/core/tools/clean-overlay.sh ./package/base-files/files/usr/bin/fuck
 # 生成默认配置及缓存
 rm -rf .config
 sed -i 's,CONFIG_WERROR=y,# CONFIG_WERROR is not set,g' target/linux/generic/config-${KERNEL_VERSION}
