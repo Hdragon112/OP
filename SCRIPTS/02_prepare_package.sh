@@ -69,7 +69,8 @@ cp -rf ../OpenWrt-Add ./package/new
 # that no longer exists (07_fw3.sh does the iptables-side equivalent).
 #rm -rf ./package/new/lede_pkg/fullconenat-nft
 #sed -i 's/ +kmod-nft-fullcone//' ./package/new/addition-trans-zh/Makefile
-rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,frp,microsocks,shadowsocks-libev,zerotier,daed}
+#rm -rf feeds/packages/net/{xray-core,v2ray-core,v2ray-geodata,sing-box,frp,microsocks,shadowsocks-libev,zerotier,daed}
+rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,v2ray-plugin,xray-plugin,geoview,shadow-tls,smartdns}
 rm -rf feeds/luci/applications/{luci-app-frps,luci-app-frpc,luci-app-zerotier}
 #rm -rf feeds/packages/utils/coremark
 #sed -i 's/+@KERNEL_DEBUG_INFO_BTF/+vmlinux-btf/' ./package/new/openwrt-einat-ebpf/Makefile
@@ -87,7 +88,7 @@ rm -rf feeds/luci/applications/{luci-app-frps,luci-app-frpc,luci-app-zerotier}
 # 更换 golang 版本
 rm -rf ./feeds/packages/lang/golang
 #cp -rf ../openwrt_pkg_ma/lang/golang ./feeds/packages/lang/golang
-git clone https://github.com/sbwml/packages_lang_golang -b 26.x feeds/packages/lang/golang
+git clone https://github.com/sbwml/packages_lang_golang -b 27.x feeds/packages/lang/golang
 # gn
 #rm -rf ./feeds/packages/devel/gn
 #cp -rf ../imm_pkg/devel/gn ./feeds/packages/devel/gn
