@@ -74,8 +74,11 @@ patch -p1 <../../../PATCH/pkgs/miniupnpd/luci-upnp-support-force_forwarding-flag
 popd
 
 # Build date and add date prefix
-sed -i '/#Dropbear/i\sed -i '\''/BUILD_ID/d'\'' /etc/os-release\necho "BUILD_ID='\''R261024" >> /etc/os-release' package/new/addition-trans-zh/files/zzz-default-settings
+sed -i '/#Dropbear/i\sed -i '\''/BUILD_ID/d'\'' /etc/os-release\necho "BUILD_ID='\''R261024" >> /etc/os-release' package/new/apps/addition-trans-zh/files/zzz-default-settings
 sed -i "s|\$(VERSION_DIST_SANITIZED)-|\$(VERSION_DIST_SANITIZED)-$(TZ=Asia/Shanghai date +%Y%m%d)-|" include/image.mk
+
+#test
+rm -rf package/new/legacy/OpenClash/luci-app-openclash/po/zh_Hans
 
 ### 最后的收尾工作 ###
 # Lets Fuck
