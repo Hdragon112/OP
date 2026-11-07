@@ -194,7 +194,7 @@ jobs:
     
       - name: Prepare Mixedwrt
         run: |
-#          sudo chown -R runner:runner /home/runner/work/OP
+          # sudo chown -R runner:runner /home/runner/work/OP
           cp -r ./SCRIPTS/${{ matrix.script_dir }}/. ./SCRIPTS/
           cp -r ./SCRIPTS/. ./
           /bin/bash 01_get_ready.sh
@@ -206,7 +206,7 @@ jobs:
           /bin/bash 02_prepare_package.sh
           /bin/bash 021_build_date.sh
           /bin/bash 02_target_only.sh
-#          /bin/bash 04_remove_upx.sh
+          # /bin/bash 04_remove_upx.sh
 
       - name: QTMDFW4
         working-directory: ${{ github.workspace }}/openwrt
