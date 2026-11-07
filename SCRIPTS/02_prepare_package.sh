@@ -36,7 +36,7 @@ sed -i 's/;)\s*\\/; \\/' include/feeds.mk
 curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o add_turboacc.sh && bash add_turboacc.sh
 
 ### ADD PKG 部分 ###
-cp -rf ../OpenWrt-Add ./package/new
+#cp -rf ../OpenWrt-Add ./package/new
 rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,v2ray-plugin,xray-plugin,geoview,shadow-tls,smartdns}
 rm -rf feeds/luci/applications/{luci-app-frps,luci-app-frpc,luci-app-zerotier}
 
@@ -74,7 +74,7 @@ popd
 #popd
 
 # Build date and add date prefix
-sed -i '/#Dropbear/i\sed -i '\''/BUILD_ID/d'\'' /etc/os-release\necho "BUILD_ID='\''R261111" >> /etc/os-release' package/new/apps/addition-trans-zh/files/zzz-default-settings
+sed -i '/#Dropbear/i\sed -i '\''/BUILD_ID/d'\'' /etc/os-release\necho "BUILD_ID='\''R261111" >> /etc/os-release' feeds/noodles8/apps/addition-trans-zh/files/zzz-default-settings
 sed -i "s|\$(VERSION_DIST_SANITIZED)-|\$(VERSION_DIST_SANITIZED)-$(TZ=Asia/Shanghai date +%Y%m%d)-|" include/image.mk
 
 #test
