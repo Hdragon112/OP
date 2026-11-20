@@ -105,7 +105,7 @@ jobs:
           seed="${{ matrix.name }}"
 
           # artifact_prefix rule
-          artifact_prefix="${{ matrix.name }}-noodles112"
+          artifact_prefix="${{ matrix.name }}-HYH112"
 
           # sha_match rule
           sha_match="$name_lower"
@@ -325,7 +325,7 @@ jobs:
         id: set_release_vars
         run: |
           echo "TAG=${{ env.latest_release }}-$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
-          echo "NAME=noodlesOS112-${{ env.latest_release }}-$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
+          echo "NAME=noodlesOS-${{ env.latest_release }}-$(date +%Y-%m-%d)" >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Create release
@@ -337,7 +337,7 @@ jobs:
           allowUpdates: true
           prerelease: false
           tag: ${{ steps.set_release_vars.outputs.TAG }}
-          commit: "25.12"
+          commit: "noodles"
           replacesArtifacts: true
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: ./artifact/*.zip
