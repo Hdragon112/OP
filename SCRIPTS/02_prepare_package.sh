@@ -40,6 +40,10 @@ curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.
 rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,v2ray-plugin,xray-plugin,geoview,shadow-tls,smartdns}
 rm -rf feeds/luci/applications/{luci-app-frps,luci-app-frpc,luci-app-zerotier}
 
+### ADD NaiLink and AdZero ###
+git clone https://github.com/slobys/NaiLink.git package/NaiLink
+#git clone https://github.com/slobys/AdZero.git package/AdZero
+
 # 更换 golang 版本
 rm -rf ./feeds/packages/lang/golang
 git clone https://github.com/sbwml/packages_lang_golang -b 27.x feeds/packages/lang/golang
