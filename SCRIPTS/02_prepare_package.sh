@@ -31,7 +31,7 @@ wget -qO- https://github.com/sbwml/r4s_build_script/raw/refs/heads/master/openwr
 popd
 
 # Build date and add date prefix
-sed -i '/#Dropbear/i\sed -i '\''/BUILD_ID/d'\'' /etc/os-release\necho "BUILD_ID='\''R261122" >> /etc/os-release' feeds/noodles8/apps/addition-trans-zh/files/zzz-default-settings
+sed -i '/#Dropbear/i\sed -i '\''/BUILD_ID/d'\'' /etc/os-release\necho "BUILD_ID='\''R261122" >> /etc/os-release' package/noodles/A-default-settings/files/zzz-default-settings
 sed -i "s|\$(VERSION_DIST_SANITIZED)-|\$(VERSION_DIST_SANITIZED)-noodles-$(TZ=Asia/Shanghai date +%Y%m%d)-|" include/image.mk
 
 ### 测试修复 openclash 中文显示 ###

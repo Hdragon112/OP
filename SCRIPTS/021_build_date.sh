@@ -3,7 +3,7 @@
 # export LC_ALL=zh_CN.UTF-8
 
 # 目标文件路径
-TARGET_FILE="package/noodles/A-default-settings/files/usr/lib/lua/luci/view/admin_status/index/links.htm"
+TARGET_FILE="package/noodles/A-default-settings/noodles/usr/lib/lua/luci/view/admin_status/index/links.htm"
 
 # 日期
 FIXED_DATE=$(date +%Y-%m-%d)

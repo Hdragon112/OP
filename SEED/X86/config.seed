@@ -41,7 +41,7 @@ CONFIG_DAE_USE_VMLINUX_BTF=y
 
 ### APPLICATION ###
 CONFIG_PACKAGE_A-default-settings=y
-CONFIG_PACKAGE_addition-trans-zh=y
+## CONFIG_PACKAGE_addition-trans-zh=y
 CONFIG_PACKAGE_autocore-x86=y
 CONFIG_PACKAGE_qemu-ga=y
 CONFIG_PACKAGE_luci-mod-dashboard=y
